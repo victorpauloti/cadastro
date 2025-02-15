@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alura Space</title>
+    <title>Encontro de Casais</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
 <body>
     <div class="pagina-inicial">
         <!-- <header class="cabecalho">
-            <img src="{% static '/assets/logo/Logo(2).png' %}" alt="Logo da Alura Space" />
+            <img src="{% static '/assets/logo/Logo(2).png' %}" alt="Logo" />
             <div class="cabecalho__busca">
                 <div class="busca__fundo">
                     <form action="#% url 'buscar' %# remove codigo py#">
@@ -37,52 +37,25 @@
                     <a href="{% url 'index' %}"><img src="{% static '/assets/ícones/1x/Home - ativo.png' %}"> Home</a>
                     <a href="{% url 'cadastro' %}"><img src="{% static '/assets/ícones/1x/Mais vistas - inativo.png' %}"> Cadastro </a>
                     <a href="https://guaranyecoresort.com.br/" target="_blank"><img src="{% static '/assets/ícones/1x/Novas - inativo.png' %}">Resort Guarany</a>
-                    <a href="{% url 'login' %}"><img src="{% static '/assets/ícones/1x/Surpreenda-me - inativo.png' %}"> Login</a>
+                    <!-- <a href="{% url 'login' %}"><img src="{% static '/assets/ícones/1x/Surpreenda-me - inativo.png' %}"> Login</a> -->
                 </nav>
             </section>
             <section class="galeria" style="margin-left: 5em">
-                <form action="" method="">
-                    <div class="row">
-                        <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
-                            <label for="nome_cadastro" style="color:#D9D9D9; margin-bottom: 5px;"><b>Nome completo Marido</b></label>
-                            <input type="text" class="form-control" name="nome_cadastro" placeholder="Ex.: João Silva" required>
+                <!-- em action inserir a chamada para a funcao (def cadastro) criada na views.py da app -->
+                 <!-- sempre garantir o method post para seguranca de dados -->
+                <form action="{% url 'cadastro' %}" method="POST">
+                    <form action="" method="">
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for field in form.visible_fields %}
+                            <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
+                                <label for="{{ field.id_for_label }}" style="color:#D9D9D9; margin-bottom: 5px;">{{field.label}}</label>
+                                {{ field }}
+                            </div>
+                            {% endfor %}       
                         </div>
-                        <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
-                            <label for="nome_cadastro" style="color:#D9D9D9; margin-bottom: 5px;"><b>Nome completo Esposa</b></label>
-                            <input type="text" class="form-control" name="nome_cadastro" placeholder="Ex.: Maria Silva" required>
-                        </div>
-                        <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
-                            <label for="email" style="color:#D9D9D9; margin-bottom: 5px;"><b>Email</b></label>
-                            <input type="email" class="form-control" name="email" placeholder="Ex.: joaosilva@xpto.com" required>
-                        </div>
-                        <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
-                            <label for="celular" style="color:#D9D9D9; margin-bottom: 5px;"><b>Telefone Celular</b></label>
-                            <input type="tel" class="form-control" name="celular" id="celular" placeholder="Ex.: (19) 98765-4321" required>
-                        </div>
-                        <!-- <div class="col-12 col-lg-6" style="margin-bottom: 10px;">
-                            <label for="password1" style="color:#D9D9D9; margin-bottom: 5px;"><b>Senha</b></label>
-                            <input type="password" class="form-control" name="password1" placeholder="Digite sua senha" required>
-                        </div>
-                        <div class="col-12 col-lg-6" style="margin-bottom: 10px;">
-                            <label for="password2" style="color:#D9D9D9; margin-bottom: 5px;"><b>Confirmação de senha</b></label>
-                            <input type="password" class="form-control" name="password2" placeholder="Digite sua senha mais uma vez" required>
-                        </div> -->
-                        <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
-                            <label for="parcelas" style="color:#D9D9D9; margin-bottom: 5px;"><b>Número de Parcelas</b></label>
-                            <select class="form-control" name="parcelas" id="parcelas" required>
-                                <option value="">Selecione o número de parcelas</option>
-                                <option value="1">PAGAMENTO EM 1 VEZ</option>
-                                <option value="2">PAGAMENTO EM 2 VEZES</option>
-                                <option value="3">PAGAMENTO EM 3 VEZES</option>
-                                <option value="4">PAGAMENTO EM 4 VEZES</option>
-                                <option value="5">PAGAMENTO EM 5 VEZES</option>
-                                <option value="6">PAGAMENTO EM 6 VEZES</option>
-                                <option value="7">PAGAMENTO EM 7 VEZES</option>
-                            </select>
-                        </div>
+
                         <!-- PERGUNTAR SE LEVARA FILHOS  -->
-
-
                         <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
                             <label style="color:#D9D9D9; margin-bottom: 5px;"><b>Levará filhos?</b></label>
                             <div>
@@ -95,8 +68,53 @@
                             <label for="qtdFilhos" style="color:#D9D9D9; margin-bottom: 5px;"><b>Quantidade de filhos</b></label>
                             <input type="number" class="form-control" id="qtdFilhos" min="1" max="10" value="1">
                         </div>
-            
+                        
                         <div id="camposFilhos"></div>
+                        
+                        <script>
+                        document.getElementById('btnSim').addEventListener('click', function() {
+                            document.getElementById('btnSim').classList.add('btn-primary');
+                            document.getElementById('btnSim').classList.remove('btn-secondary');
+                            document.getElementById('btnNao').classList.add('btn-secondary');
+                            document.getElementById('btnNao').classList.remove('btn-primary');
+                            
+                            document.getElementById('qtdFilhosDiv').style.display = 'block';
+                            atualizarCamposFilhos();
+                        });
+                        
+                        document.getElementById('btnNao').addEventListener('click', function() {
+                            this.classList.add('btn-primary');
+                            this.classList.remove('btn-secondary');
+                            document.getElementById('btnSim').classList.add('btn-secondary');
+                            document.getElementById('btnSim').classList.remove('btn-primary');
+                            
+                            document.getElementById('qtdFilhosDiv').style.display = 'none';
+                            document.getElementById('camposFilhos').innerHTML = '';
+                        });
+                        
+                        document.getElementById('qtdFilhos').addEventListener('change', atualizarCamposFilhos);
+                        
+                        function atualizarCamposFilhos() {
+                            const qtd = document.getElementById('qtdFilhos').value;
+                            const camposFilhos = document.getElementById('camposFilhos');
+                            camposFilhos.innerHTML = '';
+                        
+                            for (let i = 1; i <= qtd; i++) {
+                                camposFilhos.innerHTML += `
+                                    <div class="col-12 col-lg-6" style="margin-bottom: 10px;">
+                                        <label for="nomeFilho${i}" style="color:#D9D9D9; margin-bottom: 5px;"><b>Nome do Filho ${i}</b></label>
+                                        <input type="text" class="form-control" name="nomeFilho${i}" id="nomeFilho${i}" placeholder="Nome do filho ${i}">
+                                    </div>
+                                    <div class="col-12 col-lg-6" style="margin-bottom: 10px;">
+                                        <label for="idadeFilho${i}" style="color:#D9D9D9; margin-bottom: 5px;"><b>Idade do Filho ${i}</b></label>
+                                        <input type="number" class="form-control" name="idadeFilho${i}" id="idadeFilho${i}" placeholder="Idade do filho ${i}">
+                                    </div>
+                                `;
+                            }
+                        }
+                        </script>
+                     
+                        <!-- Botao cadastrar  -->
             
                         <div class="col-12 text-center">
                             <button class="btn btn-success col-12" style="padding-top: 5px;" type="submit">Cadastrar</button>
@@ -104,48 +122,18 @@
                     </div>
                 </form>
             </section>
-            
-            <script>
-            document.getElementById('btnSim').addEventListener('click', function() {
-                this.classList.add('btn-primary');
-                this.classList.remove('btn-secondary');
-                document.getElementById('btnNao').classList.add('btn-secondary');
-                document.getElementById('btnNao').classList.remove('btn-primary');
-                document.getElementById('qtdFilhosDiv').style.display = 'block';
-                atualizarCamposFilhos();
-            });
-            
-            document.getElementById('btnNao').addEventListener('click', function() {
-                this.classList.add('btn-primary');
-                this.classList.remove('btn-secondary');
-                document.getElementById('btnSim').classList.add('btn-secondary');
-                document.getElementById('btnSim').classList.remove('btn-primary');
-                document.getElementById('qtdFilhosDiv').style.display = 'none';
-                document.getElementById('camposFilhos').innerHTML = '';
-            });
-            
-            document.getElementById('qtdFilhos').addEventListener('change', atualizarCamposFilhos);
-            
-            function atualizarCamposFilhos() {
-                const qtd = document.getElementById('qtdFilhos').value;
-                const camposFilhos = document.getElementById('camposFilhos');
-                camposFilhos.innerHTML = '';
-            
-                for (let i = 1; i <= qtd; i++) {
-                    camposFilhos.innerHTML += `
-                        <div class="col-12 col-lg-6" style="margin-bottom: 10px;">
-                            <label for="nomeFilho${i}" style="color:#D9D9D9; margin-bottom: 5px;"><b>Nome do Filho ${i}</b></label>
-                            <input type="text" class="form-control" name="nomeFilho${i}" id="nomeFilho${i}" placeholder="Nome do filho ${i}">
-                        </div>
-                        <div class="col-12 col-lg-6" style="margin-bottom: 10px;">
-                            <label for="idadeFilho${i}" style="color:#D9D9D9; margin-bottom: 5px;"><b>Idade do Filho ${i}</b></label>
-                            <input type="number" class="form-control" name="idadeFilho${i}" id="idadeFilho${i}" placeholder="Idade do filho ${i}">
-                        </div>
-                    `;
-                }
-            }
-            </script>
+        
 
+            <!-- Incluir Mascara para celular -->
+             <!-- Incluindo jQuery e jQuery Input Mask -->
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+            <script>
+                $(document).ready(function() {
+                    $('input[data-mask]').mask($(this).attr('data-mask'));
+                });
+            </script>
         </main>
     </div>
 </body>
