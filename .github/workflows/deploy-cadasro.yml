@@ -1,50 +1,112 @@
+name: CI/CD Pipeline CADASTRO
+
 on:
   push:
     branches:
-      - main  # Aciona o workflow ao receber um push na branch main
+      - develop  # Alterado para a branch de desenvolvimento
   pull_request:
-    types: [closed]  # Aciona quando um PR é fechado
+    types: [closed] #Isso faz com que o workflow seja acionado quando um PR é fechado (merged ou não).
     branches:
-      - main  # PR direcionado à branch principal
+      - main  # Pull request para a branch principal
 
 jobs:
   deploy-to-homolog:
-    name: Deploy to Cadastro
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # Ajustado para trabalhar com a branch main
+    name: Deploy to Homologation
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          ref: main  # Clone a branch main
+          ref: develop
           token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
       
-      - name: Deploy to ServerETL
+      - name: Deploy to Homologation Server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.PORT }}
+          port: 5151
           script: |
             # Configura o Git para usar o token de acesso ao invés do username e password
             git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com".insteadOf "https://github.com"
             
-            # Clona o repositório usando o token, especificando a branch main
-            sudo git clone -b main https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com/victorpauloti/cadastro.git /home/ubuntu/tmp-deploy
-            
-            # Usa rsync para copiar os arquivos, excluindo .git e .github
-            sudo rsync -av --exclude='.git' --exclude='.github' /home/ubuntu/tmp-deploy/ /home/ubuntu/app
-            
-            # Remove o diretório temporário
-            echo "Removing temporary files"
+            # Clone o repositório usando o token, especificando a branch develop
+            sudo git clone -b develop https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com/victorpauloti/cadastro.git /home/ubuntu/tmp-deploy
+
+            # Use rsync para copiar os arquivos, excluindo .git e .github
+            echo "SYNC FILES HOMOLOGA"
+            sudo rsync -av --exclude='.git' --exclude='.github' /home/ubuntu/tmp-deploy/ /home/ubuntu/app/ > /dev/null 2>&1
+
+            # Remover o diretório temporário
+            echo "Remove files temp - HOMOLOGA"
             sudo rm -rf /home/ubuntu/tmp-deploy
             
-            # Ajusta as permissões dos arquivos no servidor
-            echo "Setting permissions on server files"
-            sudo chown -R ubuntu: /home/ubuntu/app
+            echo "permissões server files public - homologa"
+            sudo chown -R ubuntu: /home/ubuntu/app/ > /dev/null 2>&1
+
+  create-pull-request:
+    name: Create Pull Request
+    needs: deploy-to-homolog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Importante para ter acesso a todas as branches
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+          branch: release-candidate
+          base: main
+          title: 'Deploy to Production'
+          body: 'This PR is automatically created to deploy changes to production.'
+
+  deploy-to-production:
+    name: Deploy to Production
+    #  garante que o deploy só ocorra quando o PR for merged.
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          ref: main
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+      
+      - name: Create GitHub deployment
+        uses: chrnorm/deployment-action@v2
+        id: deployment
+        with:
+          token: '${{ secrets.PERSONAL_GITHUB_TOKEN }}'
+          environment: production
+      
+      - name: Deploy to Production Server
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 5151
+          script: |
+            # Configura o Git para usar o token de acesso ao invés do username e password
+            git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com".insteadOf "https://github.com"
             
-            # Reinicia o serviço do Django
-            #sudo systemctl restart gunicorn.service  # Ajuste conforme sua configuração
-            #echo "Deployment completed."
+            # Clone o repositório usando o token
+            sudo git clone https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com/victorpauloti/cadastro.git /home/encontro/tmp-deploy
+
+            # Use rsync para copiar os arquivos, excluindo .git e .github
+            #echo "SYNC FILES PRODUÇÃO"
+            sudo rsync -av --exclude='.git' --exclude='.github' /home/encontro/tmp-deploy/ /home/encontro/app/ > /dev/null 2>&1
+
+            # Remover o diretório temporário
+            echo "Remove files temp - PRODUÇÃO"
+            sudo rm -rf /home/ubuntu/tmp-deploy
+            
+            echo "permissões server files public - PRODUÇÃO"
+            sudo chown -R encontro: /home/encontro/app/ > /dev/null 2>&1
