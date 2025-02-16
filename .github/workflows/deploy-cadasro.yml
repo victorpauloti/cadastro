@@ -1,0 +1,48 @@
+name: Deploy Cadastro
+
+on:
+  push:
+    branches:
+      - main  # Aciona o workflow ao receber um push na branch main
+  pull_request:
+    types: [closed]  # Aciona quando um PR é fechado
+    branches:
+      - main  # PR direcionado à branch principal
+
+jobs:
+  deploy-to-homolog:
+    name: Deploy to Cadastro
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # Ajustado para trabalhar com a branch main
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          ref: main  # Clone a branch main
+          token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+      
+      - name: Deploy to ServerETL
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            # Configura o Git para usar o token de acesso ao invés do username e password
+            git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com".insteadOf "https://github.com"
+            
+            # Clona o repositório usando o token, especificando a branch main
+            sudo git clone -b main https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com/victorpauloti/cadastro.git /home/ubuntu/tmp-deploy
+            
+            # Usa rsync para copiar os arquivos, excluindo .git e .github
+            sudo rsync -av --exclude='.git' --exclude='.github' /home/ubuntu/tmp-deploy/ /home/ubuntu/site
+            
+            # Remove o diretório temporário
+            echo "Removing temporary files"
+            sudo rm -rf /home/ubuntu/tmp-deploy
+            
+            # Ajusta as permissões dos arquivos no servidor
+            echo "Setting permissions on server files"
+            sudo chown -R ubuntu: /home/ubuntu/site
