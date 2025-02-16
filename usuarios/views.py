@@ -16,7 +16,7 @@ def cadastro(request):
         form = CadastroForms(request.POST)
         if form.is_valid():
             try:
-                print("Formulário é válido")
+                #print("Formulário é válido")
                 # Captura os dados do formulário   
                 nome_marido = form.cleaned_data.get('nome_marido')
                 nome_esposa = form.cleaned_data.get('nome_esposa')
@@ -42,20 +42,20 @@ def cadastro(request):
                     idade_filho = request.POST.get(f'idadeFilho{i}')
                     
                     if nome_filho and idade_filho:
-                        try:
+                        #try:
                             idade_filho = int(idade_filho)
                             Filho.objects.create(
                                 cadastro=cadastro,
                                 nome=nome_filho,
                                 idade=idade_filho
                             )
-                            print(f"Filho {i} criado: {nome_filho}, {idade_filho} anos")
-                        except ValueError:
-                            print(f"Erro ao converter idade do filho {i}")
-                    else:
-                        print(f"Dados do filho {i} incompletos")
+                            #print(f"Filho {i} criado: {nome_filho}, {idade_filho} anos")
+                        #except ValueError:
+                            #print(f"Erro ao converter idade do filho {i}")
+                #     else:
+                #         print(f"Dados do filho {i} incompletos")
 
-                print("Cadastro criado com sucesso")
+                # print("Cadastro criado com sucesso")
 
                 return redirect('index')
             except Exception as e:
@@ -67,9 +67,6 @@ def cadastro(request):
         form = CadastroForms()
     return render(request, "usuarios/cadastro.html",  {"form": form})
 
-# def filhos(request):
-#     form = FilhoForm
-#     return render(request, "usuarios/cadastro.html", {"form": form})
 
 
 
