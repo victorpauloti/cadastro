@@ -37,7 +37,20 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+    line-height: 1.6;  /* Melhora a legibilidade */
+    font-size: 16px;   /* Define um tamanho de texto base */
+    h1, h2, h3, h4, h5, h6 {
+        margin: 0 0 10px; /* Margem padrão inferior */
+    }
+    
+    a {
+        text-decoration: none; /* Remove sublinhar padrão */
 }
+
+
+
+}
+
 ol, ul {
     list-style: none;
 }
@@ -58,10 +71,12 @@ table {
     width: auto;
     position: relative;
     margin-bottom: 1.5rem;
+    margin-top: 20px; /* Ajuste o espaçamento entre o menu e o banner */
 }
 
 .banner__imagem {
-    width: 100%;
+    width: 100%; /* Garante que a imagem ocupe 100% do espaço disponível */
+    height: auto; /* Mantém a proporção da imagem */
 }
 
 .banner__titulo {
@@ -137,18 +152,9 @@ table {
 
 
 .card {
-    flex: 0 1 calc(33.333% - 1rem);
-    margin-bottom: 1rem;
+    border-radius: 10px; /* Borda arredondada para cards */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Sombra leve nos cards */
 }
-
-/* .card {
-    border-radius: 10px;
-    box-shadow: 0px 10px 10px #00000050;
-    color: #FFFFFF;
-    margin-bottom: 1.5rem;
-    position: relative;
-    width: 450px;
-} */
 
 .card__imagem {
     width: 450px;
@@ -196,8 +202,7 @@ table {
 }
 
 .galeria {
-    display: flex;
-    width: 100%;
+    padding: 20px; /* Padding para melhor espaçamento */
 }
 
 .imagem {
@@ -264,9 +269,10 @@ table {
 .menu-lateral__navegacao a {
     font-family: 'Space Grotesk', sans-serif;
     align-items: center;
-    display: flex;
+    display: flex; /* Assegura que os links ocupem a linha completa */
     margin-bottom: 1.5rem;
     text-decoration: none;
+    text-align: center; /* Centraliza o texto no link */
     color: #D9D9D9;
     font-size: 24px;
 }
@@ -280,10 +286,13 @@ table {
     margin-right: 1.5rem;
 }
 
+.menu-lateral__navegacao a:hover {
+    color: #7B78E5; /* Cor de destaque ao passar o mouse */
+}
+
+/* Estilos gerais para a página */
 .pagina-inicial {
-    max-width: 1440px;
-    padding: 1.5rem;
-    margin: 0 auto;
+    margin: 0; /* Remove margem superior */
 }
 
 .populares {
@@ -339,13 +348,16 @@ table {
 }
 
 .rodape {
-    /* background-color: #04244F;  */
     background-color: #3c4d64; 
     width: 100%;
     padding: 1.5rem 3rem;
     box-sizing: border-box;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;       /* Coloca itens em coluna */
+    align-items: center;          /* Centraliza horizontalmente */
+    justify-content: center;      /* Centraliza verticalmente, se necessário */
+    text-align: center;           /* Centraliza texto */
+    padding: 20px;                /* Adiciona espaço interno, se necessário */
     color: #FFFFFF;
 }
 
@@ -356,7 +368,12 @@ table {
 }
 
 .rodape__texto {
-    font-size: 1.1rem;
+    margin: 0;                   /* Remove margens para um espaçamento uniforme */
+}
+
+/* Adicionar efeito na imagem do rodapé */
+.rodape__icones img:hover {
+    opacity: 0.8; /* Efeito de destaque nas imagens */
 }
 
 .tags {
@@ -389,49 +406,36 @@ table {
     border: 2px solid #7B78E5;
     cursor: pointer;
 }
-/* novas entradas  */
+/* Adicionando regras de responsividade */
 @media (max-width: 768px) {
+    /* Imagens na banner */
     .banner__imagem {
         height: auto;
-        max-width: 100%;
+        width: 100%; /* Garantia de que não esteja limitado a um tamanho específico */
+        display: block; /* Assegura que o banner fique em sua própria linha */
+        margin: 0 auto; /* Centraliza o banner */
     }
-}
 
-/* @media (max-width: 768px) {
+    /* Ajustando as cartas para telas pequenas */
     .card {
-        flex: 0 1 calc(50% - 1rem);
+        flex: 0 1 100%;  /* Ajusta para ocupar 100% da largura em telas pequenas */
     }
-}
 
-@media (max-width: 480px) {
-    .card {
-        flex: 0 1 100%;
-    }
-} */
-
-/*  PAGINA CADASTRO */
-
-@media (max-width: 767px) {
+    /* Menu lateral - para esconder ou mudar */
     .menu-lateral {
-        display: none;  /* Esconde o menu lateral em dispositivos móveis */
+        /*display: none;  Esconder menu em telas pequenas */
+        width: 100%; /* Garante que o menu seja responsivo */
     }
-
-    .galeria {
-        margin-left: 0 !important;  /* Remove a margem esquerda em dispositivos móveis */
-        padding: 15px;  /* Adiciona um pouco de padding */
-    }
-
-    .principal {
-        padding: 0;  /* Remove o padding da seção principal em dispositivos móveis */
+    
+    /* Centraliza o rodapé e ajusta outras propriedades de layout */
+    .rodape {
+        text-align: center;
+        padding: 15px;
+        font-size: 0.9rem; /* Diminuir o tamanho da fonte no rodapé */
     }
 }
 
-/* Estilos gerais para melhorar a aparência */
-.galeria form {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.form-control {
-    margin-bottom: 15px;
+/* Adicionando espaçamento consistente entre colunas */
+.row {
+    margin-bottom: 15px; /* Estabelece uma margem padrão */
 }
