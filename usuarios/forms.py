@@ -1,6 +1,6 @@
 from django import forms
 
-
+# NESTE PROJETO NAO ESTA USANDO LOGIN
 class LoginForms(forms.Form):
         nome_login=forms.CharField(
                 label='Nome de Login (seu email)', 
@@ -25,18 +25,18 @@ class LoginForms(forms.Form):
                 )
         )
 # este item esta sendo manipulado por java script
-# class FilhoForm(forms.Form):
-#     nome_filho = forms.CharField(
-#         label='Nome do Filho',
-#         max_length=100,
-#         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Filho'})
-#     )
+class FilhoForm(forms.Form):
+    nome_filho = forms.CharField(
+        label='Nome do Filho',
+        max_length=100,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Filho'})
+    )
     
-#     idade_filho = forms.IntegerField(
-#         label='Idade do Filho',
-#         min_value=0,
-#         widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Idade do Filho'})
-#     )
+    idade_filho = forms.IntegerField(
+        label='Idade do Filho',
+        min_value=0,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Idade do Filho'})
+    )
 
 class CadastroForms(forms.Form):
         nome_marido=forms.CharField(
@@ -47,6 +47,30 @@ class CadastroForms(forms.Form):
             attrs={
                 'class': 'form-control',
                 'placeholder': 'Ex.: João Silva',
+                }
+            )
+        )
+        cpf_marido = forms.CharField(
+        label='CPF Marido',
+        required=True,
+        max_length=15,  # Ajustar para incluir formatação
+        widget=forms.TextInput(  # Alterado para TextInput para aceitar o formato
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Ex.: 123.456.789-12',
+                'data-mask': '999.999.999-99',  # Atributo para usar com a máscara
+                }
+            )
+        )
+        dt_nasc_marido = forms.CharField(
+        label='Data Nascimento Marido',
+        required=True,
+        max_length=10,  # Ajustar para incluir formatação 10/12/1900
+        widget=forms.TextInput(  # Alterado para TextInput para aceitar o formato
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Ex.: 11/11/1900',
+                'data-mask': '99/99/9999',  # Atributo para usar com a máscara
                 }
             )
         )
@@ -61,6 +85,30 @@ class CadastroForms(forms.Form):
                 }
             )
         )
+        cpf_esposa = forms.CharField(
+        label='CPF Esposa',
+        required=True,
+        max_length=15,  # Ajustar para incluir formatação
+        widget=forms.TextInput(  # Alterado para TextInput para aceitar o formato
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Ex.: 123.456.789-12',
+                'data-mask': '999.999.999-99',  # Atributo para usar com a máscara
+                }
+            )
+        )
+        dt_nasc_esposa = forms.CharField(
+        label='Data Nascimento Esposa',
+        required=True,
+        max_length=10,  # Ajustar para incluir formatação 10/12/1900
+        widget=forms.TextInput(  # Alterado para TextInput para aceitar o formato
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Ex.: 11/11/1900',
+                'data-mask': '99/99/9999',  # Atributo para usar com a máscara
+                }
+            )
+        )        
         email=forms.EmailField(
         label='Digite seu Email - se existir (não obrigatório)',
         required=False,
@@ -95,7 +143,6 @@ class CadastroForms(forms.Form):
             ("4", "PAGAMENTO EM 4 VEZES"),
             ("5", "PAGAMENTO EM 5 VEZES"),
             ("6", "PAGAMENTO EM 6 VEZES"),
-            ("7", "PAGAMENTO EM 7 VEZES"),
         ],
         widget=forms.Select(
             attrs={
@@ -112,6 +159,7 @@ class CadastroForms(forms.Form):
         # filhos = forms.CharField(widget=forms.HiddenInput())  # Placeholder for dynamic fields
 
         # para criacao de senha no forma [desativado]
+
         # senha_1=forms.CharField(
         # label='Senha', 
         # required=True, 

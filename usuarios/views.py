@@ -19,55 +19,63 @@ def cadastro(request):
                 #print("Formulário é válido")
                 # Captura os dados do formulário   
                 nome_marido = form.cleaned_data.get('nome_marido')
+                cpf_marido  = form.cleaned_data.get('cpf_marido')
+                dt_nasc_marido = form.cleaned_data.get('dt_nasc_marido')
                 nome_esposa = form.cleaned_data.get('nome_esposa')
+                cpf_esposa  = form.cleaned_data.get('cpf_esposa')
+                dt_nasc_esposa = form.cleaned_data.get('dt_nasc_esposa')
                 email       = form.cleaned_data.get('email')
                 celular     = form.cleaned_data.get('celular')
                 numero_parcelas = form.cleaned_data.get('numero_parcelas')
 
-                # Criação do objeto Cadastro e salvando no banco de dados
+                 # Criação do objeto Cadastro e salvando no banco
                 cadastro = Cadastro.objects.create(
-                nome_marido=nome_marido,
-                nome_esposa=nome_esposa,
-                email=email,
-                celular=celular,
-                numero_parcelas=numero_parcelas
+                    nome_marido=nome_marido,
+                    cpf_marido=cpf_marido,
+                    dt_nasc_marido=dt_nasc_marido,
+                    nome_esposa=nome_esposa,
+                    cpf_esposa=cpf_esposa,
+                    dt_nasc_esposa=dt_nasc_esposa,
+                    email=email,
+                    celular=celular,
+                    numero_parcelas=numero_parcelas
                 )
-                #cadastro.save() # create ja salva os itens
 
-                # Captura os dados dos filhos
-                qtd_filhos = int(request.POST.get('qtdFilhos', 0))
+                # Captura e conversão da quantidade de filhos
+                qtd_filhos_str = request.POST.get('qtdFilhos', '0')
+                try:
+                    qtd_filhos = int(qtd_filhos_str)
+                except ValueError:
+                    qtd_filhos = 0
 
+                # Itera para criar cada registro de Filho associado ao cadastro
                 for i in range(1, qtd_filhos + 1):
-                    nome_filho = request.POST.get(f'nomeFilho{i}')
-                    idade_filho = request.POST.get(f'idadeFilho{i}')
-                    
-                    if nome_filho and idade_filho:
-                        #try:
-                            idade_filho = int(idade_filho)
-                            Filho.objects.create(
-                                cadastro=cadastro,
-                                nome=nome_filho,
-                                idade=idade_filho
-                            )
-                            #print(f"Filho {i} criado: {nome_filho}, {idade_filho} anos")
-                        #except ValueError:
-                            #print(f"Erro ao converter idade do filho {i}")
-                #     else:
-                #         print(f"Dados do filho {i} incompletos")
+                    # Obtém os campos dos filhos enviados através dos inputs nomeados dinamicamente
+                    nome_filho = request.POST.get(f'nomeFilho{i}', '').strip()
+                    idade_filho_str = request.POST.get(f'idadeFilho{i}', '').strip()
 
-                # print("Cadastro criado com sucesso")
+                    if nome_filho and idade_filho_str:
+                        try:
+                            idade_filho = int(idade_filho_str)
+                        except ValueError:
+                            print(f"Erro ao converter idade para o filho {i}: valor inválido")
+                            continue  # Pula para o próximo filho se a conversão falhar
+
+                        Filho.objects.create(
+                            cadastro=cadastro,  # Associa o filho ao cadastro criado
+                            nome=nome_filho,
+                            idade=idade_filho
+                        )
 
                 return redirect('index')
+
             except Exception as e:
                 print(f"Erro ao salvar: {str(e)}")
-
         else:
             print("Formulário inválido:", form.errors)
     else:
         form = CadastroForms()
-    return render(request, "usuarios/cadastro.html",  {"form": form})
-
-
+    return render(request, "usuarios/cadastro.html", {"form": form})
 
 
 ###### BACKLOG ##############################
