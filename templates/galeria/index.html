@@ -1,43 +1,14 @@
 {% extends 'galeria/base.html' %}
 {% load static %}
-{% block content %}
 
+{% block content %}
 <div class="container-fluid px-0">
     <section class="conteudo">
         <section class="banner mt-3 mt-md-0">
             <img class="banner__imagem img-fluid w-100" src="{% static '/assets/imagens/galeria/folder-casais-25.jpeg' %}" alt="banner Encontro Casais">
         </section>
         
-        <section class="tags">
-            <!-- Tags content (if needed) -->
-        </section>
         
-        <section class="galeria mt-4">
-            <div class="container">
-                <div class="row">
-                    {% if cards %}
-                        {% for fotografia in cards %}
-                            <div class="col-12 col-sm-6 col-lg-4 mb-4">
-                                <div class="card h-100">
-                                    <a href="{% url 'imagem' fotografia.id %}">
-                                        <img class="card-img-top" src="{% static '/assets/imagens/galeria/'%}{{ fotografia.foto }}" alt="foto">
-                                    </a>
-                                    <div class="card-body">
-                                        <span class="badge bg-primary">RESORT</span>
-                                        <h5 class="card-title">{{ fotografia.nome }}</h5>
-                                        <!-- Add more card content as needed -->
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="col-12">
-                            <p>Nenhuma fotografia disponível.</p>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </section>
     </section>
 </div>
 
