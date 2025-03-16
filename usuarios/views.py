@@ -2,6 +2,7 @@
 # como o que validar, o que sera gravado no banco
 from django.shortcuts import render, redirect
 from usuarios.forms import LoginForms, CadastroForms
+from django.contrib import messages  # Importa o módulo de mensagens do Django
 #from django.contrib.auth.models import User
 from .models import Cadastro, Filho  # Importa os modelos
 
@@ -66,7 +67,8 @@ def cadastro(request):
                             nome=nome_filho,
                             idade=idade_filho
                         )
-
+                # Adiciona a mensagem de sucesso
+                messages.success(request, "Cadastro realizado com sucesso!")
                 return redirect('index')
 
             except Exception as e:
